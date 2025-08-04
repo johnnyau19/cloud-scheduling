@@ -13,11 +13,11 @@
 This project is inspired by a common real-world scenario in which a store employee is responsible for directing customers to checkout lines after shopping. Each customer carries a shopping cart with a varying number of items, and the employee must decide which checkout counter they should join to minimize overall waiting time and improve service efficiency.
 
 In this analogy:
-    - The store employee functions as the **agent**.
-    - Each customer corresponds to a **job**.
-    - The number of items in the cart represents the **estimated workload** of that job.
-    - Each checkout counter is modeled as a **server queue**.
-    - Importantly, the agent has access only to **noisy workload estimates** rather than the actual service time.
+- The store employee functions as the **agent**.
+- Each customer corresponds to a **job**.
+- The number of items in the cart represents the **estimated workload** of that job.
+- Each checkout counter is modeled as a **server queue**.
+- Importantly, the agent has access only to **noisy workload estimates** rather than the actual service time.
 
 In practice, humans often rely on simple heuristics—such as assigning customers to the queue with the lowest estimated workload. This project investigates how a **Deep Reinforcement Learning (RL)** agent can learn a more effective job dispatching policy, potentially outperforming such intuitive strategies in uncertain environments.
 
@@ -34,7 +34,7 @@ In practice, humans often rely on simple heuristics—such as assigning customer
 ## Data Preparation
 - The environment generates job data based on Gaussian (normal) distributions to simulate real-world uncertainty in workload estimation.
 
-- When creating a new job, the **estimated workload** is first sampled from a Gaussian distribution \( \mathcal{N}(\mu, \sigma^2) \), where the random variable is the estimated workload itself. This value serves as an approximation of the actual job size and is passed to initialize a job object.
+- When creating a new job, the **estimated workload** is first sampled from a Gaussian distribution, where the random variable is the estimated workload itself. This value serves as an approximation of the actual job size and is passed to initialize a job object.
 
 - The **actual workload**, which is unknown to the agent, is then sampled from another Gaussian distribution centered around the estimated workload. In this case, the estimated workload acts as the **mean**, and a predefined standard deviation controls the noise level. This models real-world scenarios where estimation errors occur due to incomplete or noisy information.
 

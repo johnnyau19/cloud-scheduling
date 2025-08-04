@@ -12,7 +12,7 @@ ESTIMATED_WORKLOAD_STD = 8.0
 
 
 # Generate actual workload from estimated workload
-ACTUAL_WORKLOAD_NOISE_STD = 5 
+ACTUAL_WORKLOAD_NOISE_STD = 5.0
 
 
 # Reward

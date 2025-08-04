@@ -23,20 +23,19 @@ In practice, humans often rely on simple heuristics—such as assigning customer
 
 
 
-
-
 ## Model 
-- Apply Double DQN to stablize the learning process during Q-value updates.
-
+- Apply Double DQN to stablize and reduce Q-value overestimation during learning. 
+- The model is trained implementing Stable-Baselines3.
+- Action space: selects server's number, defers.
 
 
 
 ## Data Preparation
 - The environment generates job data based on Gaussian (normal) distributions to simulate real-world uncertainty in workload estimation.
 
-- When creating a new job, the **estimated workload** is first sampled from a Gaussian distribution, where the random variable is the estimated workload itself. This value serves as an approximation of the actual job size and is passed to initialize a job object.
+- When creating a new job, the **estimated workload** is first sampled from a Gaussian distribution, where the random variable is the estimated workload itself. This value serves as an approximation of the actual job size and is passed to initialize a job object. (**estimated-workload ~ N(mean=25, std=8.0)**)
 
-- The **actual workload**, which is unknown to the agent, is then sampled from another Gaussian distribution centered around the estimated workload. In this case, the estimated workload acts as the **mean**, and a predefined standard deviation controls the noise level. This models real-world scenarios where estimation errors occur due to incomplete or noisy information.
+- The **actual workload**, which is unknown to the agent, is then sampled from another Gaussian distribution centered around the estimated workload. In this case, the estimated workload acts as the **mean**, and a predefined standard deviation controls the noise level. This models real-world scenarios where estimation errors occur due to incomplete or noisy information. (**actual-workload ~ N(mean=estimated-workload, std=5.0)**)
 
 - Both estimated and actual workloads are clipped to remain within realistic bounds, ensuring job feasibility.
 

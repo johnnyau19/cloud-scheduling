@@ -81,9 +81,9 @@ This comparative setup enables a quantitative and visual analysis of how well th
 
 - Result:
 
-![alt text](images/image-2.png)
+![alt text](images/image_line.png)
 
-![alt text](images/image-3.png)
+![alt text](images/image_bar.png)
 
 
 

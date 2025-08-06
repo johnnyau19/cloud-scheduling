@@ -33,8 +33,7 @@ agent_throughput_sum = 0
 eeft_throughput_sum = 0
 
 # Initialize the agent
-agent = DQN.load("model/best_model")
-# agent = DQN.load("logs/checkpoints/dqn_2000000_steps")
+agent = DQN.load("logs/best_model_checkpoint/best_model")
 
 
 # Initalize 2 identical environments, one for RL agent and another for EEFT policy
@@ -91,15 +90,18 @@ while test_set < num_test:
 
     # Change another
     test_set += 1
-print(f"\nEEFT policy average throughput : {eeft_throughput_sum/num_test} \n")
-print(f"Agent average throughput : {agent_throughput_sum/num_test} \n")
-print("EEFT won !") if (eeft_throughput_sum/num_test) >= (agent_throughput_sum/num_test) else print("Agent won !")
+agent_throughput_avg = agent_throughput_sum/num_test
+eeft_throughput_avg = eeft_throughput_sum/num_test
+
+print(f"\nEEFT policy average throughput : {eeft_throughput_avg} \n")
+print(f"Agent average throughput : {agent_throughput_avg} \n")
+print("EEFT won !") if (eeft_throughput_avg) >= (agent_throughput_avg) else print("Agent won !")
 
 plt.figure()
 plt.ioff()
 algorithms= ['DQN Agent', 'EEFT']
-throughputs=[agent_throughput_sum/num_test, eeft_throughput_sum/num_test]
+throughputs=[agent_throughput_avg, eeft_throughput_avg]
 plt.bar(algorithms, throughputs, width=0.5)
-plt.ylim(100,115)
+plt.ylim(100,max(agent_throughput_avg, eeft_throughput_avg)+10)
 plt.ylabel('Average throughput per episode')
 plt.show()

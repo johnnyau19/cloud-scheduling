@@ -160,8 +160,7 @@ class JobSimulator(gym.Env):
                     finished_job = self.servers_queue[server_id].popleft()
                     self.servers_estimated_workload[server_id] -= finished_job.estimated_workload
                     self.total_completed_jobs += 1
-                    # reward += 1.7**-((self.current_step-finished_job.arrival_time)-0.599)   #JOB_DONE
-                    reward += JOB_DONE*(0.9**-((self.current_step-finished_job.arrival_time)))
+                    reward += JOB_DONE
 
         observation = self._get_obs()
         info = self._get_info()

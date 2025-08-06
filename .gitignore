@@ -180,5 +180,4 @@ pyrightconfig.json
 model/
 test.py
 graph.py
-
-*.vscode
+*.vscode/

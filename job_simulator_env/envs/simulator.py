@@ -70,6 +70,7 @@ class JobSimulator(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.current_step = 0
+        self.num_selected_not_enough_capacity_server = 0
         self.total_completed_jobs = 0 
         for queue in self.servers_queue:
             queue.clear()
@@ -92,30 +93,10 @@ class JobSimulator(gym.Env):
         # Reset reward
         reward = 0
 
-        # If agent does not choose to deferral, then we create a new job and assign to the agent
-        # If agent deferrals, then simulator will neither generate nor assign new job to the agent
         if action != Actions.deferral.value:
-            # Give bonus if it correctly assigns job to the queue has smallest workload
-            if self.agent_holding_job.estimated_workload <= (self.server_max_workload - self.servers_estimated_workload[action]):
-
-                # Find the current servers that has the smallest estimated workload
-                smallest_workload = min(self.servers_estimated_workload)
-                servers_with_min_workload = set()
-                for id in range(len(self.servers_estimated_workload)):
-                    if self.servers_estimated_workload[id] == smallest_workload:
-                        servers_with_min_workload.add(id)
-
-                # Check if the agent 's selected server is one these severs that has the min workload
-                if action in servers_with_min_workload:
-                    reward += CORRECTLY_SELECTED_MIN_WORKLOAD_SERVER
-                else:
-                    # If agent selected the wrong server's queue, punish
-                    reward += INCORRECTLY_SELECTED_MIN_WORKLOAD_SERVER
-
-            # Punish if the agent assigned job to the server that does not have capacity >= job's estimated workload
-            else:
+            if self.agent_holding_job.estimated_workload > (self.server_max_workload - self.servers_estimated_workload[action]):
                 reward += SELECTED_NOT_ENOUGH_SERVER_CAPACITY
-
+                self.num_selected_not_enough_capacity_server += 1
             # Add job to the queue of the server
             self.servers_queue[action].append(self.agent_holding_job)
 
@@ -133,19 +114,6 @@ class JobSimulator(gym.Env):
 
         # If agent chooses to deferral
         elif action == Actions.deferral.value:
-            spare_servers = 0
-            for workload in self.servers_estimated_workload:
-                if self.agent_holding_job.estimated_workload <= (self.server_max_workload-workload):
-                    spare_servers += 1
-                    break
-
-            # If there is a spare server, there is no point for not assigning the job away
-            if spare_servers > 0:
-                reward += DEFERRAL_WHILE_SPARE_SERVER_EXISTS
-
-            # No server has capacity for this job, agent should keep the job and wait
-            elif spare_servers == 0:
-                reward += CORRECTLY_DEFERRAL
             wait = True  # boolean value to show the agent's state when agent is waiting
 
         # Servers are processing jobs
@@ -172,6 +140,9 @@ class JobSimulator(gym.Env):
     
     def get_total_completed_jobs(self):
         return self.total_completed_jobs
+    
+    def get_num_selected_not_enough_capacity_server(self):
+        return self.num_selected_not_enough_capacity_server
 
     def render(self):
         if self.render_mode == "human":

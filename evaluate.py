@@ -32,6 +32,9 @@ plt.show()
 agent_throughput_sum = 0
 eeft_throughput_sum = 0
 
+# number of times assigned jobs to a full server
+num_assign_jobs_to_full_server = 0 
+
 # Initialize the agent
 agent = DQN.load("logs/best_model_checkpoint/best_model")
 
@@ -41,7 +44,7 @@ agent_env = JobSimulator(None)
 eeft_env = JobSimulator(None)
 
 test_set = 0
-num_test = 2000
+num_test = 1000
 while test_set < num_test:
     # Reset the environment with the same seed for both so that the environment assigns similar jobs to both algorithm
     seed = int(time.time_ns())   # Randomly generate test set for each episode
@@ -55,7 +58,7 @@ while test_set < num_test:
             eeft_action)
 
         # Agent takes action
-        agent_action, info = agent.predict(agent_obs)
+        agent_action, info = agent.predict(agent_obs, deterministic=True)
         agent_obs, agent_reward, agent_terminated, agent_trunc, agent_info = agent_env.step(
             int(agent_action))
 
@@ -90,18 +93,22 @@ while test_set < num_test:
 
     # Change another
     test_set += 1
+
+    # Update the number of times agent assigning to a full server
+    num_assign_jobs_to_full_server += agent_env.get_num_selected_not_enough_capacity_server()
+
 agent_throughput_avg = agent_throughput_sum/num_test
 eeft_throughput_avg = eeft_throughput_sum/num_test
 
 print(f"\nEEFT policy average throughput : {eeft_throughput_avg} \n")
 print(f"Agent average throughput : {agent_throughput_avg} \n")
-print("EEFT won !") if (eeft_throughput_avg) >= (agent_throughput_avg) else print("Agent won !")
+print("EEFT won !") if (eeft_throughput_avg) >= (agent_throughput_avg) else print("Agent won !"), print("Number of times DQN agent assigned jobs to a full server: ", num_assign_jobs_to_full_server)
 
 plt.figure()
 plt.ioff()
 algorithms= ['DQN Agent', 'EEFT']
 throughputs=[agent_throughput_avg, eeft_throughput_avg]
 plt.bar(algorithms, throughputs, width=0.5)
-plt.ylim(100,max(agent_throughput_avg, eeft_throughput_avg)+10)
+plt.ylim(22,max(agent_throughput_avg, eeft_throughput_avg)+0.2)
 plt.ylabel('Average throughput per episode')
 plt.show()

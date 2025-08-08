@@ -23,7 +23,7 @@ eval_callback = EvalCallback(n_eval_episodes=50,eval_env=val_env, eval_freq=2000
 model.set_env(train_env)
 
 # Train model   
-model.learn(total_timesteps=1800000, log_interval=50, progress_bar=True, callback=eval_callback)
+model.learn(total_timesteps=2000000, log_interval=50, progress_bar=True, callback=eval_callback)
 model.save("model/dqn_job_scheduler")
 
 

@@ -177,7 +177,7 @@ pyrightconfig.json
 
 
 # model checkpoint
-model/
 test.py
 graph.py
 *.vscode/
+logs/

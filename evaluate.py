@@ -3,9 +3,9 @@ This compares the throughput of RL agent with EEFT policy, and displays the resu
 """
 from job_simulator_env.envs.simulator import JobSimulator
 from baseline.eeft import eeft_policy
-from stable_baselines3 import DQN
 import matplotlib.pyplot as plt
-import time, random 
+import time
+import onnxruntime as ort
 
 
 # Plot these datapoints onto the graph
@@ -36,8 +36,7 @@ eeft_throughput_sum = 0
 num_assign_jobs_to_full_server = 0 
 
 # Initialize the agent
-agent = DQN.load("logs/best_model_checkpoint/best_model")
-
+ort_sess = ort.InferenceSession("model/best_model.onnx")
 
 # Initalize 2 identical environments, one for RL agent and another for EEFT policy
 agent_env = JobSimulator(None)
@@ -58,7 +57,10 @@ while test_set < num_test:
             eeft_action)
 
         # Agent takes action
-        agent_action, info = agent.predict(agent_obs, deterministic=True)
+        agent_obs = agent_obs.reshape(1,-1)
+        agent_action = ort_sess.run(None, {"input": agent_obs})[0]
+
+        # agent_action, info = agent.predict(agent_obs, deterministic=True)
         agent_obs, agent_reward, agent_terminated, agent_trunc, agent_info = agent_env.step(
             int(agent_action))
 
@@ -91,7 +93,7 @@ while test_set < num_test:
     print(
         f"Agent finished total jobs : {agent_env.get_total_completed_jobs()} \n")
 
-    # Change another
+    # Change another test set
     test_set += 1
 
     # Update the number of times agent assigning to a full server
@@ -103,7 +105,6 @@ eeft_throughput_avg = eeft_throughput_sum/num_test
 print(f"\nEEFT policy average throughput : {eeft_throughput_avg} \n")
 print(f"Agent average throughput : {agent_throughput_avg} \n")
 print("EEFT won !") if (eeft_throughput_avg) >= (agent_throughput_avg) else print("Agent won !"), print("Number of times DQN agent assigned jobs to a full server: ", num_assign_jobs_to_full_server)
-
 plt.figure()
 plt.ioff()
 algorithms= ['DQN Agent', 'EEFT']

@@ -6,7 +6,7 @@
 - [Model](#Model)
 - [Data Preparation](#Data-Preparation)
 - [Evaluation](#Evaluation)
-- [Deployment with Docker](#Deployment-with-Docker)
+- [Running with Docker](#Running-with-Docker)
 
 
 
@@ -87,17 +87,47 @@ This comparative setup enables a quantitative and visual analysis of how well th
 ![alt text](images/image_bar.png)
 
 
-## Deployment with Docker
-The project is fully containerized for simple deployment. 
-To pull the image:
+##  Running with Docker
+This image provides an environment to run training and evaluation scripts:
+Pull this image: 
 ```bash
 docker pull ghcr.io/johnnyau19/cloud-scheduling:v1
 ```
-
 Execute:
 ```bash
 docker run --rm -it ghcr.io/johnnyau19/cloud-scheduling:v1
 ```
+Inside the container:
+- To evaluate the model and compare with EEFT policy, run:
+```bash
+python3 ./evaluate.py
+```
+
+- To see latency comparison, please run:
+```bash
+python3 ./benchmark_runtime.py
+```
+
+- To train the model: 
+```bash
+python3 ./train.py
+```
+
+This image containerizes the FastAPI server for exposing the scheduling service via HTTP. 
+To pull the image:
+```bash
+docker pull ghcr.io/johnnyau19/cloud-scheduling:v2
+```
+
+Execute:
+```bash
+docker run --rm -p 8080:8000 -it ghcr.io/johnnyau19/cloud-scheduling:v2
+```
+
+Access the API: `http://127.0.0.1:8080/docs`
+
+
+
 
 
 

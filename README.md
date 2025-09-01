@@ -89,8 +89,7 @@ This comparative setup enables a quantitative and visual analysis of how well th
 
 ##  Running with Docker
 
-**Note: The GHCR packages (`cloud-scheduling`) use the project’s old name; they remain functionally identical to this repo.
-**
+**Note: The GHCR packages (`cloud-scheduling`) use the project’s old name; they remain functionally identical to this repo.**
 
 This image provides an environment to run training and evaluation scripts:
 Pull this image: 

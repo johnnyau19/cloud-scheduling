@@ -1,4 +1,4 @@
-# Cloud Scheduling 
+# load-balancer
 
 ## Table of Contents
 - [Overview](#Overview)
@@ -20,7 +20,7 @@ In this analogy:
 - Each checkout counter is modeled as a **server queue**.
 - Importantly, the agent has access only to **noisy workload estimates** rather than the actual service time.
 
-In practice, humans often rely on simple heuristics—such as assigning customers to the queue with the lowest estimated workload. This project investigates how a **Deep Reinforcement Learning (RL)** agent can learn a more effective job dispatching policy, potentially outperforming such intuitive strategies in uncertain environments.
+In practice, humans often rely on simple heuristics such as assigning customers to the queue with the lowest estimated workload. This project investigates how a **Deep Reinforcement Learning (RL)** agent can learn a more effective job dispatching policy, potentially outperforming such intuitive strategies in uncertain environments.
 
 
 
@@ -88,6 +88,10 @@ This comparative setup enables a quantitative and visual analysis of how well th
 
 
 ##  Running with Docker
+
+**Note: The GHCR packages (`cloud-scheduling`) use the project’s old name; they remain functionally identical to this repo.
+**
+
 This image provides an environment to run training and evaluation scripts:
 Pull this image: 
 ```bash
